@@ -72,6 +72,11 @@ public class SecurityConfig {
                     auth.requestMatchers(HttpMethod.GET, "/api/v1/collections/public/**").permitAll();
                     auth.requestMatchers(HttpMethod.GET, "/api/v1/collections/ranking").permitAll();
                     auth.requestMatchers("/api/v1/collections/**").authenticated();
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/discussions/posts/*").permitAll();
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/discussions/*/replies").permitAll();
+                    auth.requestMatchers(HttpMethod.GET, "/api/v1/discussions/posts/*/settings").permitAll();
+                    auth.requestMatchers("/api/v1/discussions/**").authenticated();
+                    auth.requestMatchers("/api/v1/notifications/**").authenticated();
                     if (testingEnabled) {
                         auth.requestMatchers("/api/testing/**").permitAll();
                     }

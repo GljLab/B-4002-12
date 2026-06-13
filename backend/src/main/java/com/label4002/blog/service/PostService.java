@@ -47,6 +47,7 @@ public class PostService {
     private final KeywordRepository keywordRepository;
     private final CategoryService categoryService;
     private final FavoriteRepository favoriteRepository;
+    private final DiscussionService discussionService;
 
     public PostService(PostRepository postRepository,
                        UserRepository userRepository,
@@ -55,7 +56,8 @@ public class PostService {
                        PostKeywordRepository postKeywordRepository,
                        KeywordRepository keywordRepository,
                        CategoryService categoryService,
-                       FavoriteRepository favoriteRepository) {
+                       FavoriteRepository favoriteRepository,
+                       DiscussionService discussionService) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
@@ -64,6 +66,7 @@ public class PostService {
         this.keywordRepository = keywordRepository;
         this.categoryService = categoryService;
         this.favoriteRepository = favoriteRepository;
+        this.discussionService = discussionService;
     }
 
     @Transactional(readOnly = true)
@@ -337,6 +340,7 @@ public class PostService {
             } else {
                 post.setStatus(PostStatus.PUBLISHED);
                 post.setScheduledAt(null);
+                discussionService.initPostSettings(post.getId());
             }
             post.setRejectionReason(null);
             postRepository.save(post);
@@ -624,6 +628,9 @@ public class PostService {
         } else {
             post.setStatus(PostStatus.PUBLISHED);
             post.setScheduledAt(null);
+            if (!post.isRevision()) {
+                discussionService.initPostSettings(post.getId());
+            }
             postRepository.save(post);
         }
     }
@@ -646,6 +653,7 @@ public class PostService {
                     if (post.getAuthor() != null && post.getAuthor().isEnabled()) {
                         post.setStatus(PostStatus.PUBLISHED);
                         post.setScheduledAt(null);
+                        discussionService.initPostSettings(post.getId());
                         postRepository.save(post);
                     }
                 }

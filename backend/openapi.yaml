@@ -1,0 +1,180 @@
+openapi: 3.0.3
+info:
+  title: label-4002 blog api
+  version: 1.0.0
+servers:
+  - url: /api/v1
+paths:
+  /posts:
+    get:
+      summary: 获取公开文章列表
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - in: query
+          name: size
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 10
+      responses:
+        '200':
+          description: ok
+  /posts/{id}:
+    get:
+      summary: 获取文章详情
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: ok
+        '404':
+          description: not found
+  /auth/login:
+    post:
+      summary: Session 登录
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: ok
+  /auth/logout:
+    post:
+      summary: Session 登出
+      responses:
+        '200':
+          description: ok
+  /auth/me:
+    get:
+      summary: 获取当前登录用户
+      responses:
+        '200':
+          description: ok
+        '401':
+          description: unauthorized
+  /admin/posts/mine:
+    get:
+      summary: 我的文章列表
+      responses:
+        '200':
+          description: ok
+  /admin/posts:
+    post:
+      summary: 创建文章
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePostRequest'
+      responses:
+        '201':
+          description: created
+  /admin/posts/{id}:
+    put:
+      summary: 更新文章
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePostRequest'
+      responses:
+        '200':
+          description: ok
+    delete:
+      summary: 删除文章
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: no content
+  /token/login:
+    post:
+      summary: JWT 登录
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: ok
+  /token/refresh:
+    post:
+      summary: 刷新 JWT
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+      responses:
+        '200':
+          description: ok
+        '401':
+          description: unauthorized
+  /token/secure/me:
+    get:
+      summary: 校验 JWT 并返回用户
+      responses:
+        '200':
+          description: ok
+components:
+  schemas:
+    LoginRequest:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    CreatePostRequest:
+      type: object
+      required: [title, content]
+      properties:
+        title:
+          type: string
+          maxLength: 200
+        content:
+          type: string
+    UpdatePostRequest:
+      type: object
+      required: [title, content]
+      properties:
+        title:
+          type: string
+          maxLength: 200
+        content:
+          type: string
+    TokenRefreshRequest:
+      type: object
+      required: [refreshToken]
+      properties:
+        refreshToken:
+          type: string

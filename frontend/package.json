@@ -1,0 +1,44 @@
+{
+  "name": "label-4002-frontend",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.26.1",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "type-check": "vue-tsc --noEmit",
+    "test:unit": "vitest run",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.3.2",
+    "@kangc/v-md-editor": "^2.3.18",
+    "@types/markdown-it": "^14.1.2",
+    "@types/prismjs": "^1.26.6",
+    "axios": "^1.8.4",
+    "dayjs": "^1.11.13",
+    "dompurify": "^3.4.8",
+    "element-plus": "^2.9.6",
+    "highlight.js": "^11.11.1",
+    "markdown-it": "^14.2.0",
+    "markdown-it-emoji": "^3.0.0",
+    "markdown-it-task-lists": "^2.1.1",
+    "pinia": "^2.3.1",
+    "prismjs": "^1.30.0",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.51.1",
+    "@types/node": "^22.13.10",
+    "@vitejs/plugin-vue": "^5.2.1",
+    "@vue/test-utils": "^2.4.6",
+    "jsdom": "^26.0.0",
+    "typescript": "^5.8.2",
+    "vite": "^5.4.14",
+    "vitest": "^3.0.9",
+    "vue-tsc": "^2.2.8"
+  }
+}

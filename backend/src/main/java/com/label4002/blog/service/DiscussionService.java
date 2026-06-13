@@ -297,7 +297,10 @@ public class DiscussionService {
 
         List<CommentEntity> rootComments;
         switch (sortBy == null ? "newest" : sortBy.toLowerCase()) {
-            case "popular", "popularity" -> rootComments = commentRepository.findRootCommentsByPostIdOrderByPopularity(postId);
+            case "popular", "popularity", "hottest", "hot" ->
+                    rootComments = commentRepository.findRootCommentsByPostIdOrderByPopularity(postId);
+            case "oldest", "earliest" ->
+                    rootComments = commentRepository.findRootCommentsByPostIdOrderByOldest(postId);
             case "author", "author-only" -> {
                 Long authorId = post.getAuthor() != null ? post.getAuthor().getId() : null;
                 rootComments = authorId != null
@@ -340,15 +343,22 @@ public class DiscussionService {
             trees.add(buildTree(root, repliesByParent, userCache, userVotes, currentUserId, remainingDepth));
         }
 
+        int totalCount = rootComments.size();
+        int totalPages = (int) Math.ceil((double) totalCount / ROOT_PAGE_SIZE);
+        long totalComments = commentRepository.countByPostIdAndDeletedFalse(postId);
+
         Map<String, Object> result = new HashMap<>();
         result.put("items", trees);
-        result.put("totalCount", rootComments.size());
+        result.put("total", totalComments);
+        result.put("totalCount", totalCount);
+        result.put("totalCommentsCount", totalComments);
         result.put("page", Math.max(1, rootPage));
+        result.put("size", ROOT_PAGE_SIZE);
         result.put("pageSize", ROOT_PAGE_SIZE);
-        result.put("totalPages", (int) Math.ceil((double) rootComments.size() / ROOT_PAGE_SIZE));
+        result.put("totalPages", totalPages);
+        result.put("hasMore", Math.max(1, rootPage) < totalPages);
         result.put("settings", toSettingsDTO(settings));
         result.put("sortBy", sortBy == null ? "newest" : sortBy);
-        result.put("totalCommentsCount", commentRepository.countByPostIdAndDeletedFalse(postId));
         return result;
     }
 
@@ -389,12 +399,18 @@ public class DiscussionService {
             trees.add(buildTree(reply, repliesByParent, userCache, userVotes, currentUserId, maxRepliesDepth));
         }
 
+        long totalCount = pageResult.getTotalElements();
+        int totalPages = pageResult.getTotalPages();
+
         Map<String, Object> result = new HashMap<>();
         result.put("items", trees);
-        result.put("totalCount", pageResult.getTotalElements());
+        result.put("total", totalCount);
+        result.put("totalCount", totalCount);
         result.put("page", Math.max(1, page));
+        result.put("size", REPLIES_PAGE_SIZE);
         result.put("pageSize", REPLIES_PAGE_SIZE);
-        result.put("totalPages", pageResult.getTotalPages());
+        result.put("totalPages", totalPages);
+        result.put("hasMore", Math.max(1, page) < totalPages);
         return result;
     }
 

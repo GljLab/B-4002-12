@@ -29,6 +29,9 @@ public interface CommentRepository extends JpaRepository<CommentEntity, Long> {
     @Query("SELECT c FROM CommentEntity c WHERE c.postId = :postId AND c.parentId IS NULL AND c.deleted = false ORDER BY c.pinned DESC, (c.upvotes - c.downvotes) DESC, c.createdAt DESC")
     List<CommentEntity> findRootCommentsByPostIdOrderByPopularity(@Param("postId") Long postId);
 
+    @Query("SELECT c FROM CommentEntity c WHERE c.postId = :postId AND c.parentId IS NULL AND c.deleted = false ORDER BY c.pinned DESC, c.createdAt ASC")
+    List<CommentEntity> findRootCommentsByPostIdOrderByOldest(@Param("postId") Long postId);
+
     @Query("SELECT c FROM CommentEntity c WHERE c.postId = :postId AND c.parentId IS NULL AND c.deleted = false AND c.userId = :authorUserId ORDER BY c.pinned DESC, c.createdAt DESC")
     List<CommentEntity> findRootCommentsByPostIdAndAuthor(@Param("postId") Long postId, @Param("authorUserId") Long authorUserId);
 

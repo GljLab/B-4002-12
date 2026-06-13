@@ -13,6 +13,7 @@ import type { BreadcrumbItem, KeywordItem, PostDetail, CollectionAlbum } from '.
 import { markdownRenderer, countWords, type TocItem } from '../utils/markdown'
 import ImagePreview from '../components/ImagePreview.vue'
 import TableOfContents from '../components/TableOfContents.vue'
+import DiscussionSection from '../components/DiscussionSection.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -326,6 +327,13 @@ onUnmounted(() => {
             {{ keyword.name }}
           </el-tag>
         </div>
+
+        <DiscussionSection
+          v-if="post"
+          :post-id="postId"
+          :post-author-id="post.authorId"
+          :max-depth="3"
+        />
       </template>
 
       <template v-else>

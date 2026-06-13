@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { useAuthStore } from './stores/auth'
+import NotificationBell from './components/NotificationBell.vue'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -51,7 +52,10 @@ async function logout() {
             <router-link class="nav-link" to="/reader/history">阅读足迹</router-link>
           </template>
           <router-link v-if="!authStore.isLoggedIn" class="nav-link" to="/login">登录</router-link>
-          <a v-if="authStore.isLoggedIn" class="nav-link" href="#" @click.prevent="logout">退出（{{ displayName }}）</a>
+          <template v-if="authStore.isLoggedIn">
+            <NotificationBell />
+            <a class="nav-link" href="#" @click.prevent="logout">退出（{{ displayName }}）</a>
+          </template>
         </nav>
       </div>
     </header>

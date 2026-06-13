@@ -546,3 +546,157 @@ export interface ReadingProgress {
   scrollPosition: number
   readAt: string
 }
+
+export interface CommentTreeDTO {
+  id: number
+  userId: number
+  username: string
+  nickname: string
+  avatarUrl: string | null
+  postId: number
+  parentId: number | null
+  replyToCommentId: number | null
+  replyToUserId: number | null
+  replyToUsername: string | null
+  replyToNickname: string | null
+  depth: number
+  content: string
+  upvotes: number
+  downvotes: number
+  currentUserVote: number | null
+  pinned: boolean
+  edited: boolean
+  editedAt: string | null
+  deleted: boolean
+  deletedBy: string | null
+  hasImages: boolean
+  hasCode: boolean
+  canEdit: boolean
+  canDelete: boolean
+  createdAt: string
+  replies: CommentTreeDTO[]
+}
+
+export interface CreateDiscussionRequest {
+  content: string
+  parentId?: number | null
+  replyToCommentId?: number | null
+  replyToUserId?: number | null
+}
+
+export interface UpdateDiscussionRequest {
+  content: string
+}
+
+export interface CommentVoteRequest {
+  voteType: number
+}
+
+export interface CommentVoteResultDTO {
+  commentId: number
+  upvotes: number
+  downvotes: number
+  currentUserVote: number | null
+}
+
+export interface CommentReportDTO {
+  id: number
+  commentId: number
+  commentContent: string
+  commentAuthorId: number
+  commentAuthorUsername: string
+  reporterId: number
+  reporterUsername: string
+  reporterNickname: string
+  reason: string
+  description: string | null
+  status: string
+  reviewedBy: number | null
+  reviewerUsername: string | null
+  reviewedAt: string | null
+  resolution: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+export interface CreateCommentReportRequest {
+  reason: string
+  description?: string
+}
+
+export interface PinnedCommentResultDTO {
+  commentId: number
+  pinned: boolean
+}
+
+export interface PostCommentSettingsDTO {
+  id: number
+  postId: number
+  accessRule: string
+  requireApproval: boolean
+  maxDepth: number
+  maxLength: number
+  allowImages: boolean
+  allowCode: boolean
+  allowEmojis: boolean
+  allowMentions: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export interface UpdatePostCommentSettingsRequest {
+  accessRule?: string
+  requireApproval?: boolean
+  maxDepth?: number
+  maxLength?: number
+  allowImages?: boolean
+  allowCode?: boolean
+  allowEmojis?: boolean
+  allowMentions?: boolean
+}
+
+export interface NotificationDTO {
+  id: number
+  type: string
+  relatedCommentId: number | null
+  relatedPostId: number
+  relatedPostTitle: string
+  relatedUserId: number | null
+  relatedUsername: string | null
+  relatedNickname: string | null
+  relatedAvatarUrl: string | null
+  title: string
+  content: string
+  read: boolean
+  readAt: string | null
+  createdAt: string
+}
+
+export interface UnreadNotificationCountDTO {
+  total: number
+  replyCount: number
+  mentionCount: number
+  upvoteCount: number
+  reportResultCount: number
+}
+
+export interface DiscussionListResponse {
+  items: CommentTreeDTO[]
+  total: number
+  page: number
+  size: number
+  totalPages: number
+  hasMore: boolean
+}
+
+export interface NotificationListResponse {
+  items: NotificationDTO[]
+  total: number
+  page: number
+  size: number
+  totalPages: number
+}
+
+export interface MessageResponse {
+  message: string
+}

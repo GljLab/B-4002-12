@@ -1,6 +1,6 @@
 ALTER TABLE comments 
-    ADD COLUMN parent_id BIGINT UNSIGNED NULL,
-    ADD COLUMN reply_to_comment_id BIGINT UNSIGNED NULL,
+    ADD COLUMN parent_id BIGINT NULL,
+    ADD COLUMN reply_to_comment_id BIGINT NULL,
     ADD COLUMN reply_to_user_id BIGINT UNSIGNED NULL,
     ADD COLUMN depth INT NOT NULL DEFAULT 0,
     ADD COLUMN path VARCHAR(500) NOT NULL DEFAULT '',
@@ -28,7 +28,7 @@ ALTER TABLE comments
 
 CREATE TABLE comment_votes (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    comment_id BIGINT UNSIGNED NOT NULL,
+    comment_id BIGINT NOT NULL,
     user_id BIGINT UNSIGNED NOT NULL,
     vote_type TINYINT NOT NULL COMMENT '1=upvote, -1=downvote',
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -41,7 +41,7 @@ CREATE TABLE comment_votes (
 
 CREATE TABLE comment_reports (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    comment_id BIGINT UNSIGNED NOT NULL,
+    comment_id BIGINT NOT NULL,
     reporter_id BIGINT UNSIGNED NOT NULL,
     reason VARCHAR(50) NOT NULL,
     description TEXT NULL,
@@ -63,7 +63,7 @@ CREATE TABLE notifications (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT UNSIGNED NOT NULL,
     type VARCHAR(30) NOT NULL COMMENT 'REPLY, MENTION, UPVOTE, REPORT_RESULT',
-    related_comment_id BIGINT UNSIGNED NULL,
+    related_comment_id BIGINT NULL,
     related_post_id BIGINT UNSIGNED NULL,
     related_user_id BIGINT UNSIGNED NULL,
     title VARCHAR(200) NOT NULL,

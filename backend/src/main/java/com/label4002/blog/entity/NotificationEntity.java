@@ -66,7 +66,7 @@ public class NotificationEntity {
     private String content;
 
     @Column(name = "is_read", nullable = false)
-    private boolean read = false;
+    private boolean isRead = false;
 
     @Column(name = "read_at")
     private LocalDateTime readAt;
@@ -178,11 +178,11 @@ public class NotificationEntity {
     }
 
     public boolean isRead() {
-        return read;
+        return isRead;
     }
 
     public void setRead(boolean read) {
-        this.read = read;
+        this.isRead = read;
     }
 
     public LocalDateTime getReadAt() {

@@ -106,7 +106,7 @@ public class DiscussionService {
             throw new ForbiddenException("只能对已公开的文章发起讨论");
         }
 
-        PostCommentSettingsEntity settings = getOrCreateSettings(postId);
+        PostCommentSettingsEntity settings = getSettingsOrDefault(postId);
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("用户不存在"));
 
@@ -293,7 +293,7 @@ public class DiscussionService {
         PostEntity post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException("文章不存在"));
 
-        PostCommentSettingsEntity settings = getOrCreateSettings(postId);
+        PostCommentSettingsEntity settings = getSettingsOrDefault(postId);
 
         List<CommentEntity> rootComments;
         switch (sortBy == null ? "newest" : sortBy.toLowerCase()) {
@@ -367,7 +367,7 @@ public class DiscussionService {
         CommentEntity parent = commentRepository.findByIdAndDeletedFalse(commentId)
                 .orElseThrow(() -> new NotFoundException("讨论不存在"));
 
-        PostCommentSettingsEntity settings = getOrCreateSettings(parent.getPostId());
+        PostCommentSettingsEntity settings = getSettingsOrDefault(parent.getPostId());
         int maxRepliesDepth = settings.getMaxDepth() - parent.getDepth() - 1;
 
         Page<CommentEntity> pageResult = commentRepository.findRepliesByParentIdPaged(
@@ -514,7 +514,7 @@ public class DiscussionService {
         if (!postRepository.existsById(postId)) {
             throw new NotFoundException("文章不存在");
         }
-        PostCommentSettingsEntity settings = getOrCreateSettings(postId);
+        PostCommentSettingsEntity settings = getSettingsOrDefault(postId);
         return toSettingsDTO(settings);
     }
 
@@ -527,7 +527,7 @@ public class DiscussionService {
             throw new ForbiddenException("只有文章作者可以修改讨论设置");
         }
 
-        PostCommentSettingsEntity settings = getOrCreateSettings(postId);
+        PostCommentSettingsEntity settings = getSettingsOrDefault(postId);
 
         if (request.accessRule() != null) {
             try {
@@ -790,6 +790,18 @@ public class DiscussionService {
             s.setMaxLength(2000);
             s.setCreatedAt(LocalDateTime.now());
             return postCommentSettingsRepository.save(s);
+        });
+    }
+
+    private PostCommentSettingsEntity getSettingsOrDefault(Long postId) {
+        return postCommentSettingsRepository.findByPostId(postId).orElseGet(() -> {
+            PostCommentSettingsEntity s = new PostCommentSettingsEntity();
+            s.setPostId(postId);
+            s.setAccessRule(PostCommentSettingsEntity.AccessRule.OPEN);
+            s.setMaxDepth(3);
+            s.setMaxLength(2000);
+            s.setCreatedAt(LocalDateTime.now());
+            return s;
         });
     }
 
